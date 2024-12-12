@@ -1,0 +1,845 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+<meta charset="UTF-8" /> 
+     <title>POINTER-LOCK_FLORES ALBARRAN JUAN FRANCISCO</title>
+     <link rel="icon" type="image/png" href="./assets/favicon.png"/>
+     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+     <style>
+          body {
+              margin: 0;
+              overflow: hidden;
+          }
+          #boton {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 40px;
+            cursor: pointer;
+            font-family: "Bebas Neue", sans-serif; /* Tipografía Bebas Neue */
+            color: white; /* Cambié el color del texto a blanco */
+          }
+          #activ {
+            color: rgb(255, 0, 0);
+          }
+     </style>
+</head>
+
+<body>
+  <!--Boton para activar el pointerlock-->
+  <div id="boton">
+    Para comenzar da clic en + para activar <p id="activ">(  )</p>Mira al rededor usando el mouse, pulsa Esc para parar
+  </div>
+    <!--Representa el contenido de un documento HTML-->
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<script type="importmap">
+    {
+      "imports": {
+        "three": "./js/three.module.js",
+        "three/PointerLockControls": "./js/PointerLockControls.js",
+        "three/interactive": "./js/three.interactive.js"
+      }
+    }
+</script>
+
+<script type="module">
+    // 📚  Librerías importadas para hacer funcionar three.js y el OrbitControls
+    import * as THREE from 'three';
+    import { InteractionManager } from 'three/interactive';//añade libreria itneractiva
+    import { TWEEN } from './js/tween.module.min.js'; // Libreria movimiento suave
+    import { PointerLockControls } from 'three/PointerLockControls'; //control de camara
+
+    import {RoundedBoxGeometry} from './js/RoundedBoxGeometry.js';
+
+    //IMPORTAR ELEMENTOS JS NAVIDAD
+    import piso from'./js/piso.js'
+    import regalo1 from'./js/regalo1.js'
+    import regalo2 from'./js/regalo2.js'
+    import regalo3 from'./js/regalo3.js'
+    import arbol from'./js/arbol.js'
+    import muñeco from'./js/muñeco.js'
+    import santa from'./js/santa.js'
+    import pinata from'./js/pinata.js'
+    import esfera3 from'./js/esfera3.js'
+    import caramelo from'./js/caramelo.js'
+
+
+    //👉🏽 Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'),antialias: true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x0959a0); //COLOR DE FONDO
+
+    //🎬 Creando nueva escena 
+    var scene = new THREE.Scene();
+
+    //🎥🎥 Agregar una cámara de perspectiva
+
+    // Configuración de cámara y escenario ######
+
+    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, .1, 1000);
+    camera.position.set(0, 0, 0);
+
+   // agregar el pointlock ########
+    var controls = new PointerLockControls( camera, renderer.domElement );
+    document.getElementById('activ').onclick=()=>{
+        controls.lock()
+    }
+    controls.addEventListener( 'lock', function () {
+        boton.style.display = 'none';
+    } );
+    controls.addEventListener( 'unlock', function () {
+        boton.style.display = '';
+    } );
+
+    // Añadir interactionManager #######
+    var interactionManager = new InteractionManager(
+        renderer,
+        camera,
+        renderer.domElement
+    );
+
+    var scene =new THREE.Scene();
+
+    // Evento para redimensionar el canvas
+    // Sizes: Objeto donde se toman los tamaños interiores 'inner' de la ventana.
+    const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    };
+
+    // Tomando el 'canvas' mediante el id 'myCanvas' del HTML para cambiar sus dimensiones
+    const canvas = document.getElementById('myCanvas');
+
+    // Evento que se ejecutará al redimensionar 'resize' nuestra ventana
+    window.addEventListener('resize', () => {
+
+    // Actualizando los valores del objeto 'sizes' con las medidas internas de la ventana
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+
+      // Actualización de los valores en la cámara como la relación-aspecto y la
+      //matriz de proyección.
+      camera.aspect = sizes.width / sizes.height;
+      camera.updateProjectionMatrix();
+
+      // Aplicando al render el nuevo tamaño del 'viewport'
+      renderer.setSize(sizes.width, sizes.height);
+      });
+
+      //Settings de la cámara
+      camera.position.set(0, 60, 260);
+
+    //👉🏽Añadiendo los OrbitControls
+    //var controls = new OrbitControls(camera, renderer.domElement);
+    //controls.enableDamping = true;
+    //controls.dampingFactor = 0.05;
+
+    /*/✏️GridHelper
+    const gridHelper = new THREE.GridHelper(50,10);
+    scene.add (gridHelper);
+
+    //✏️Ejes
+    const axesHelper = new THREE.AxesHelper(50);
+    scene.add (axesHelper);*/
+  
+
+    // 🪄🪄 SECCIÓN DE CÓDIGO 🪄🪄
+
+    //BACKGROUND
+    var loader = new THREE.TextureLoader();
+    var bgTexture = loader.load ('./assets/fondo1.jpg')
+    scene.background = bgTexture;
+
+    //LUZ 1
+    var luzAmbiental = new THREE.AmbientLight(0x505050, 0.3);
+    scene.add(luzAmbiental);
+    
+    //LUZ 2
+    var luzRelleno = new THREE.AmbientLight(0x707070, 0.3);
+    scene.add(luzRelleno);
+
+    //LUZ 3
+    var light=new THREE.SpotLight(0xffffff, 0.5);
+    light.position.set(100,170,200);
+    light.target.position.set(10, 100, 0); 
+    scene.add(light);
+    
+    //LUZ 4
+    var light=new THREE.SpotLight(0xffffff, 0.5);
+    light.position.set(-100,170,-200);
+    light.target.position.set(10, 100, 0); 
+    scene.add(light);
+
+    // LUZ 5
+    var luzFrontal = new THREE.DirectionalLight(0xffffff, 0.5);
+    luzFrontal.position.set(0, 100, 100);
+    luzFrontal.target.position.set(10, 100, 0); 
+    scene.add(luzFrontal);
+    scene.add(luzFrontal.target);
+
+    // LUZ 6
+    var luzTrasera = new THREE.DirectionalLight(0xffffff, 0.5);
+    luzTrasera.position.set(0, 100, -100); 
+    luzTrasera.target.position.set(-10, 100, 0);
+    scene.add(luzTrasera); 
+    scene.add(luzTrasera.target);
+
+    //BASE 1
+    var geometria1 = new THREE.BoxGeometry(250,2,175);
+    var textura1 = new THREE.TextureLoader().load("./assets/base.jpg");
+    var material1 = new THREE.MeshLambertMaterial({ map: textura1 });
+    var maya1 = new THREE.Mesh(geometria1,material1);
+    scene.add(maya1);
+    maya1.position.set(0,-1.6,16.4);
+
+    //BASE 2
+    var geometria1 = new THREE.BoxGeometry(238,2,170);
+    var textura1 = new THREE.TextureLoader().load("./assets/arco.jpg");
+    var material1 = new THREE.MeshLambertMaterial({ map: textura1 });
+    var maya1 = new THREE.Mesh(geometria1,material1);
+    scene.add(maya1);
+    maya1.position.set(0,-1.5,14);
+
+    //BASE 2
+    var geometria1 = new THREE.BoxGeometry(60,2,120);
+    var textura1 = new THREE.TextureLoader().load("./assets/base.jpg");
+    var material1 = new THREE.MeshLambertMaterial({ map: textura1 });
+    var maya1 = new THREE.Mesh(geometria1,material1);
+    scene.add(maya1);
+    maya1.position.set(0,-1.4,39);
+
+    //ARCO 1
+    var arco1 = new THREE.CylinderGeometry(125, 125, 2, 50, 1, false, 1.57, Math.PI); 
+    var texturaArco1 = new THREE.TextureLoader().load("./assets/base.jpg");
+    var materialArco1 = new THREE.MeshLambertMaterial({ map: texturaArco1 });
+    var meshArco1 = new THREE.Mesh(arco1, materialArco1);
+    meshArco1.position.set(0, -2, -70);
+    meshArco1.rotation.x = THREE.MathUtils.degToRad(90);
+    scene.add(meshArco1);
+
+    // ARCO 2
+    var arco2 = new THREE.CylinderGeometry(119, 119, 2, 50, 1, false, 1.57, Math.PI); 
+    var texturaArco2 = new THREE.TextureLoader().load("./assets/arco.jpg");
+    var materialArco2 = new THREE.MeshLambertMaterial({ map: texturaArco2 });
+    var meshArco2 = new THREE.Mesh(arco2, materialArco2);
+    meshArco2.position.set(0, -2, -68);
+    meshArco2.rotation.x = THREE.MathUtils.degToRad(90);
+    scene.add(meshArco2);
+
+    // ARCO 3
+    var arco3 = new THREE.CylinderGeometry(111, 111, 2, 50, 1, false, 1.57, Math.PI); 
+    var texturaArco3 = new THREE.TextureLoader().load("./assets/base.jpg");
+    var materialArco3 = new THREE.MeshLambertMaterial({ map: texturaArco3 });
+    var meshArco3 = new THREE.Mesh(arco3, materialArco3);
+    meshArco3.position.set(0, -2, -66);
+    meshArco3.rotation.x = THREE.MathUtils.degToRad(90);
+    scene.add(meshArco3);
+
+    // ARCO 4
+    var arco4 = new THREE.CylinderGeometry(105, 105, 2, 50, 1, false, 1.57, Math.PI); 
+    var texturaArco4 = new THREE.TextureLoader().load("./assets/arco.jpg");
+    var materialArco4 = new THREE.MeshLambertMaterial({ map: texturaArco4 });
+    var meshArco4 = new THREE.Mesh(arco4, materialArco4);
+    meshArco4.position.set(0, -2, -64);
+    meshArco4.rotation.x = THREE.MathUtils.degToRad(90);
+    scene.add(meshArco4);
+
+    // ARCO 5
+    var arco5 = new THREE.CylinderGeometry(98, 98, 2, 50, 1, false, 1.57, Math.PI); 
+    var texturaArco5 = new THREE.TextureLoader().load("./assets/base.jpg");
+    var materialArco5 = new THREE.MeshLambertMaterial({ map: texturaArco5 });
+    var meshArco5 = new THREE.Mesh(arco5, materialArco5);
+    meshArco5.position.set(0, -2, -62);
+    meshArco5.rotation.x = THREE.MathUtils.degToRad(90);
+    scene.add(meshArco5);
+
+
+    //--- ELEMENTOS NAVIDEÑOS IMPORTADOS ---
+
+    // ** PISOS IMPORTADOS **
+
+    // PISO 1
+    var pisito=piso({x:0, y:0, z:0});
+    scene.add(pisito);
+    pisito.scale.set(1.3, 1, 1.3);
+    pisito.position.set(0, 1, 0);
+
+    // PISO 2
+    var piso2 = pisito.clone();
+    piso2.scale.set(1.1, 1, 1.1);
+    piso2.position.set(-45, 1, 15);
+    scene.add(piso2);
+
+    // PISO 3
+    var piso3 = pisito.clone();
+    piso3.scale.set(1.1, 1, 1.1);
+    piso3.position.set(45, 1, 15);
+    scene.add(piso3);
+
+
+    // ** REGALOS IMPORTADOS **
+    
+    //IZQUIERDA
+    //REGALO 1
+    var regalito1=regalo1({x:0, y:0, z:0});
+    scene.add(regalito1);
+    regalito1.scale.set(4, 4, 4);
+    regalito1.position.set(-100,-10.6,-45);
+
+    //REGALO 2
+    var regalito2=regalo2({x:0, y:0, z:0});
+    scene.add(regalito2);
+    regalito2.scale.set(3, 3, 3);
+    regalito2.position.set(-106,-8,-26);
+
+    //REGALO 3
+    var regalito3=regalo3({x:0, y:0, z:0});
+    scene.add(regalito3);
+    regalito3.scale.set(2, 2, 2);
+    regalito3.position.set(-92,-5.7,-28);
+
+    //DERECHA
+    //REGALO 1
+    var regalito1=regalo1({x:0, y:0, z:0});
+    scene.add(regalito1);
+    regalito1.scale.set(4, 4, 4);
+    regalito1.position.set(100,-10.6,-45);
+
+    //REGALO 2
+    var regalito2=regalo2({x:0, y:0, z:0});
+    scene.add(regalito2);
+    regalito2.scale.set(3, 3, 3);
+    regalito2.position.set(106,-8,-26);
+
+    //REGALO 3
+    var regalito3=regalo3({x:0, y:0, z:0});
+    scene.add(regalito3);
+    regalito3.scale.set(2, 2, 2);
+    regalito3.position.set(92,-5.7,-28);
+
+    //CENTRO
+    //REGALO 1
+    var regalito1=regalo2({x:0, y:0, z:0});
+    scene.add(regalito1);
+    regalito1.scale.set(3, 3, 3);
+    regalito1.position.set(0,-8, 48);
+
+    //REGALO 2
+    var regalito2=regalo1({x:0, y:0, z:0});
+    scene.add(regalito2);
+    regalito2.scale.set(2, 2, 2);
+    regalito2.position.set(-10,-5.7,61.3);
+
+    //REGALO 2
+    var regalito2=regalo1({x:0, y:0, z:0});
+    scene.add(regalito2);
+    regalito2.scale.set(2, 2, 2);
+    regalito2.position.set(10,-5.7,61.3);
+
+    //REGALO 3
+    var regalito3=regalo2({x:0, y:0, z:0});
+    scene.add(regalito3);
+    regalito3.scale.set(1.3, 1.3, 1.3);
+    regalito3.position.set(-16,-3.8,70);
+
+    //REGALO 3
+    var regalito3=regalo2({x:0, y:0, z:0});
+    scene.add(regalito3);
+    regalito3.scale.set(1.3, 1.3, 1.3);
+    regalito3.position.set(16,-3.8,70);
+
+    //REGALO 3
+    var regalito3=regalo3({x:0, y:0, z:0});
+    scene.add(regalito3);
+    regalito3.scale.set(1.5, 1.5, 1.5);
+    regalito3.position.set(0,-4.2,60);
+    
+
+    // ** ARBOL IMPORTADO **
+
+    //ARBOL 1
+    var arbolito=arbol({x:0, y:0, z:0});
+    scene.add(arbolito);
+    arbolito.scale.set(1.8, 1.8, 1.8);
+    arbolito.position.set(0,43,0);
+
+   // Almacenamos la escala original antes de modificarla
+    var originalScaleArbolito = { x: arbolito.scale.x, y: arbolito.scale.y, z: arbolito.scale.z };
+
+    arbolito.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre el árbol
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(2, 2, 2);  // Aumentamos el tamaño temporalmente
+    });
+
+    arbolito.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor del árbol
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleArbolito.x, originalScaleArbolito.y, originalScaleArbolito.z);
+    });
+
+    arbolito.addEventListener('click', (event) => {  // Evento para cuando se hace clic en el árbol
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición del árbol
+        var targetPosition = { 
+            x: arbolito.position.x,  // Tomamos la posición X del árbol
+            y: arbolito.position.y,  // Tomamos la posición Y del árbol
+            z: arbolito.position.z + 70 // Hacemos que la cámara se acerque un poco al árbol, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    interactionManager.add(arbolito); // Añadir el elemento que se quiere animar al interaction manager
+
+    // ** MUEÑECO IMPORTADO **
+
+    var muñequito=muñeco({x:0, y:0, z:0});
+    scene.add(muñequito);
+    muñequito.scale.set(1.1, 1.1, 1.1);
+    muñequito.position.set(45,20,15);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScaleMuñeco = { x: muñequito.scale.x, y: muñequito.scale.y, z: muñequito.scale.z };
+
+    muñequito.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la figura
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.3, 1.3, 1.3);  // Aumentamos el tamaño temporalmente
+    });
+
+    muñequito.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la figura
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleMuñeco.x, originalScaleMuñeco.y, originalScaleMuñeco.z);
+    });
+
+    muñequito.addEventListener('click', (event) => {  // Evento para cuando se suelta el clic
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición del muñeco
+        var targetPosition = { 
+            x: muñequito.position.x,  // Tomamos la posición X del muñeco
+            y: muñequito.position.y,  // Tomamos la posición Y del muñeco
+            z: muñequito.position.z + 70 // Hacemos que la cámara se acerque un poco al muñeco, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    interactionManager.add(muñequito); // Añadir el elemento que se quiere animar al interaction manager
+
+    // ** SANTA IMPORTADO **
+
+    var santita=santa({x:0, y:0, z:0});
+    scene.add(santita);
+    santita.scale.set(1.1, 1.1, 1.1);
+    santita.position.set(-45,20,15);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScaleSantita = { x: santita.scale.x, y: santita.scale.y, z: santita.scale.z };
+
+    santita.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre Santa
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.3, 1.3, 1.3);  // Aumentamos el tamaño temporalmente
+    });
+
+    santita.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de Santa
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleSantita.x, originalScaleSantita.y, originalScaleSantita.z);
+    });
+
+    santita.addEventListener('click', (event) => {  // Evento para cuando se hace clic en Santa
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de Santa
+        var targetPosition = { 
+            x: santita.position.x,  // Tomamos la posición X de Santa
+            y: santita.position.y,  // Tomamos la posición Y de Santa
+            z: santita.position.z + 70 // Hacemos que la cámara se acerque un poco a Santa, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    interactionManager.add(santita); // Añadir el elemento que se quiere animar al interaction manager
+
+   // ** PIÑATA IMPORTADA **
+
+    // PIÑATA 1
+    var pinatita1 = pinata({x: 0, y: 0, z: 0});
+    scene.add(pinatita1);
+    pinatita1.scale.set(2, 2, 2);
+    pinatita1.position.set(0, 160, -10);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScalePinatita1 = { x: pinatita1.scale.x, y: pinatita1.scale.y, z: pinatita1.scale.z };
+
+    pinatita1.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la piñata
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(2.2, 2.2, 2.2);  // Aumentamos el tamaño temporalmente
+    });
+
+    pinatita1.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la piñata
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScalePinatita1.x, originalScalePinatita1.y, originalScalePinatita1.z);
+    });
+
+    pinatita1.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la piñata
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la piñata
+        var targetPosition = { 
+            x: pinatita1.position.x,  // Tomamos la posición X de la piñata
+            y: pinatita1.position.y,  // Tomamos la posición Y de la piñata
+            z: pinatita1.position.z + 70 // Hacemos que la cámara se acerque un poco a la piñata, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // PIÑATA 2
+    var pinatita2 = pinata({x: 0, y: 0, z: 0});
+    scene.add(pinatita2);
+    pinatita2.scale.set(1.5, 1.5, 1.5);
+    pinatita2.position.set(-80, 100, 60);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScalePinatita2 = { x: pinatita2.scale.x, y: pinatita2.scale.y, z: pinatita2.scale.z };
+
+    pinatita2.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la piñata
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.7, 1.7, 1.7);  // Aumentamos el tamaño temporalmente
+    });
+
+    pinatita2.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la piñata
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScalePinatita2.x, originalScalePinatita2.y, originalScalePinatita2.z);
+    });
+
+    pinatita2.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la piñata
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la piñata
+        var targetPosition = { 
+            x: pinatita2.position.x,  // Tomamos la posición X de la piñata
+            y: pinatita2.position.y,  // Tomamos la posición Y de la piñata
+            z: pinatita2.position.z + 70 // Hacemos que la cámara se acerque un poco a la piñata, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // PIÑATA 3
+    var pinatita3 = pinata({x: 0, y: 0, z: 0});
+    scene.add(pinatita3);
+    pinatita3.scale.set(1.5, 1.5, 1.5);
+    pinatita3.position.set(80, 100, 60);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScalePinatita3 = { x: pinatita3.scale.x, y: pinatita3.scale.y, z: pinatita3.scale.z };
+
+    pinatita3.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la piñata
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.7, 1.7, 1.7);  // Aumentamos el tamaño temporalmente
+    });
+
+    pinatita3.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la piñata
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScalePinatita3.x, originalScalePinatita3.y, originalScalePinatita3.z);
+    });
+
+    pinatita3.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la piñata
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la piñata
+        var targetPosition = { 
+            x: pinatita3.position.x,  // Tomamos la posición X de la piñata
+            y: pinatita3.position.y,  // Tomamos la posición Y de la piñata
+            z: pinatita3.position.z + 70 // Hacemos que la cámara se acerque un poco a la piñata, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // Añadimos las piñatas al interaction manager
+    interactionManager.add(pinatita1);
+    interactionManager.add(pinatita2);
+    interactionManager.add(pinatita3);
+
+
+    // ** ESFERA IMPORTADA **
+
+    // IZQUIERDA
+    var esferita3_1 = esfera3({x: 0, y: 0, z: 0});
+    scene.add(esferita3_1);
+    esferita3_1.scale.set(1.3, 1.3, 1.3);
+    esferita3_1.position.set(-90, 6, 65);
+    esferita3_1.rotation.z = THREE.MathUtils.degToRad(-15);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScaleEsferita3_1 = { x: esferita3_1.scale.x, y: esferita3_1.scale.y, z: esferita3_1.scale.z };
+
+    esferita3_1.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la esfera
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.5, 1.5, 1.5);  // Aumentamos el tamaño temporalmente
+    });
+
+    esferita3_1.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la esfera
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleEsferita3_1.x, originalScaleEsferita3_1.y, originalScaleEsferita3_1.z);
+    });
+
+    esferita3_1.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la esfera
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la esfera
+        var targetPosition = { 
+            x: esferita3_1.position.x,  // Tomamos la posición X de la esfera
+            y: esferita3_1.position.y,  // Tomamos la posición Y de la esfera
+            z: esferita3_1.position.z + 70 // Hacemos que la cámara se acerque un poco a la esfera, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // Segunda esfera izquierda
+    var esferita3_2 = esfera3({x: 0, y: 0, z: 0});
+    scene.add(esferita3_2);
+    esferita3_2.scale.set(1, 1, 1);
+    esferita3_2.position.set(-95, 4.3, 76);
+    esferita3_2.rotation.z = THREE.MathUtils.degToRad(15);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScaleEsferita3_2 = { x: esferita3_2.scale.x, y: esferita3_2.scale.y, z: esferita3_2.scale.z };
+
+    esferita3_2.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la esfera
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.2, 1.2, 1.2);  // Aumentamos el tamaño temporalmente
+    });
+
+    esferita3_2.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la esfera
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleEsferita3_2.x, originalScaleEsferita3_2.y, originalScaleEsferita3_2.z);
+    });
+
+    esferita3_2.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la esfera
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la esfera
+        var targetPosition = { 
+            x: esferita3_2.position.x,  // Tomamos la posición X de la esfera
+            y: esferita3_2.position.y,  // Tomamos la posición Y de la esfera
+            z: esferita3_2.position.z + 70 // Hacemos que la cámara se acerque un poco a la esfera, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // DERECHA
+    var esferita3_3 = esfera3({x: 0, y: 0, z: 0});
+    scene.add(esferita3_3);
+    esferita3_3.scale.set(1.3, 1.3, 1.3);
+    esferita3_3.position.set(90, 6, 65);
+    esferita3_3.rotation.z = THREE.MathUtils.degToRad(15);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScaleEsferita3_3 = { x: esferita3_3.scale.x, y: esferita3_3.scale.y, z: esferita3_3.scale.z };
+
+    esferita3_3.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la esfera
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.5, 1.5, 1.5);  // Aumentamos el tamaño temporalmente
+    });
+
+    esferita3_3.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la esfera
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleEsferita3_3.x, originalScaleEsferita3_3.y, originalScaleEsferita3_3.z);
+    });
+
+    esferita3_3.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la esfera
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la esfera
+        var targetPosition = { 
+            x: esferita3_3.position.x,  // Tomamos la posición X de la esfera
+            y: esferita3_3.position.y,  // Tomamos la posición Y de la esfera
+            z: esferita3_3.position.z + 70 // Hacemos que la cámara se acerque un poco a la esfera, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // Segunda esfera derecha
+    var esferita3_4 = esfera3({x: 0, y: 0, z: 0});
+    scene.add(esferita3_4);
+    esferita3_4.scale.set(1, 1, 1);
+    esferita3_4.position.set(95, 4.3, 76);
+    esferita3_4.rotation.z = THREE.MathUtils.degToRad(-15);
+
+    // Almacenamos la escala original antes de modificarla
+    var originalScaleEsferita3_4 = { x: esferita3_4.scale.x, y: esferita3_4.scale.y, z: esferita3_4.scale.z };
+
+    esferita3_4.addEventListener('mouseover', (event) => {  // Evento para cuando colocamos el cursor sobre la esfera
+        document.body.style.cursor = 'pointer';
+        event.target.scale.set(1.2, 1.2, 1.2);  // Aumentamos el tamaño temporalmente
+    });
+
+    esferita3_4.addEventListener('mouseout', (event) => {  // Evento para cuando quitas el cursor de la esfera
+        document.body.style.cursor = 'default';
+        // Restauramos la escala original
+        event.target.scale.set(originalScaleEsferita3_4.x, originalScaleEsferita3_4.y, originalScaleEsferita3_4.z);
+    });
+
+    esferita3_4.addEventListener('click', (event) => {  // Evento para cuando se hace clic en la esfera
+        var coords = { x: camera.position.x, y: camera.position.y, z: camera.position.z }; // Se crea un objeto para "contener" las coordenadas
+
+        // Calculamos la posición de la esfera
+        var targetPosition = { 
+            x: esferita3_4.position.x,  // Tomamos la posición X de la esfera
+            y: esferita3_4.position.y,  // Tomamos la posición Y de la esfera
+            z: esferita3_4.position.z + 70 // Hacemos que la cámara se acerque un poco a la esfera, ajustando la distancia en Z
+        };
+
+        new TWEEN.Tween(coords) // Se declara el TWEEN, que permite que los movimientos sean fluidos y no de golpe
+            .to(targetPosition, 2000) // Movimiento hasta la nueva posición de la cámara en 2 segundos
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z)) // Se actualizan las variables en la cámara
+            .start(); // El movimiento inicia
+    });
+
+    // Añadimos las esferas al interaction manager
+    interactionManager.add(esferita3_1);
+    interactionManager.add(esferita3_2);
+    interactionManager.add(esferita3_3);
+    interactionManager.add(esferita3_4);
+
+
+    // ** CARAMELO IMPORTADO **
+    //IZQUIERDA
+    var caramelito1=caramelo({x:0, y:0, z:0});
+    scene.add(caramelito1);
+    caramelito1.scale.set(1.5, 1.5, 1.5);
+    caramelito1.position.set(-50,7,80);
+
+    var caramelito2=caramelo({x:0, y:0, z:0});
+    scene.add(caramelito2);
+    caramelito2.scale.set(1, 1, 1);
+    caramelito2.position.set(-60,5,85);
+
+    var caramelito3=caramelo({x:0, y:0, z:0});
+    scene.add(caramelito3);
+    caramelito3.scale.set(1, 1, 1);
+    caramelito3.position.set(-40,5,85);
+
+    //DERECHA
+    var grupoCaramelitos = new THREE.Group();
+
+    var caramelito11 = caramelo({x: 0, y: 0, z: 0});
+    caramelito11.scale.set(1.5, 1.5, 1.5);
+    caramelito11.position.set(50, 7, 80);
+    grupoCaramelitos.add(caramelito11);
+
+    var caramelito22 = caramelo({x: 0, y: 0, z: 0});
+    caramelito22.scale.set(1, 1, 1);
+    caramelito22.position.set(60, 5, 85);
+    grupoCaramelitos.add(caramelito22);
+
+    var caramelito33 = caramelo({x: 0, y: 0, z: 0});
+    caramelito33.scale.set(1, 1, 1);
+    caramelito33.position.set(40, 5, 85);
+    grupoCaramelitos.add(caramelito33);
+
+    scene.add(grupoCaramelitos);
+
+    var grupoCaramelitosClone = grupoCaramelitos.clone();
+    grupoCaramelitosClone.position.set(-150, 0, -60);
+    scene.add(grupoCaramelitosClone);
+
+    var grupoCaramelitosClone2 = grupoCaramelitos.clone();
+    grupoCaramelitosClone2.position.set(50, 0, -60);
+    scene.add(grupoCaramelitosClone2);
+
+    // CRUZ CENTRAL QUE SIRVE DE GUIA
+    var materialx = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+    var geometryx = new THREE.BoxGeometry(.0075, .05, .075);
+    var meshx = new THREE.Mesh(geometryx, materialx);
+    meshx.position.set(0, 0, -1);
+    var geometryx2 = new THREE.BoxGeometry(.05, .0075, .075);
+    var meshx2 = new THREE.Mesh(geometryx2, materialx);
+    meshx2.position.set(0, 0, -1);
+    scene.add(camera);
+    camera.add(meshx, meshx2);
+
+
+    //🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación
+
+    arbolito.rotation.y -=0.008;
+    muñequito.rotation.y -=0.008;
+    santita.rotation.y +=0.008;
+    pinatita1.rotation.y +=0.008;
+    pinatita2.rotation.y -=0.008;
+    pinatita3.rotation.y +=0.008;
+    caramelito1.rotation.y -=0.05;
+    caramelito2.rotation.y +=0.05;
+    caramelito3.rotation.y -=0.05;
+    caramelito11.rotation.y +=0.05;
+    caramelito22.rotation.y +=0.05;
+    caramelito33.rotation.y -=0.05;
+
+    TWEEN.update()  //se agrega la transición del tween a functionrender para que genere la animación el movimiento suave
+
+    interactionManager.update();////// se debe actualizar el interaction manager en las animaciones
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>
